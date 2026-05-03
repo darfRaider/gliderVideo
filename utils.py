@@ -7,6 +7,7 @@ from dataclasses import dataclass
 class Bearing:
     bearing_rad: float
     bearing_deg: float
+    climb_rate: float
 
 def get_bearing(pt1: GPXTrackPoint, pt2: GPXTrackPoint) -> Bearing:
     assert pt1.time < pt2.time, f"Track point 2 must contain more recent data than point 1 ({pt1}, {pt2})"
@@ -17,7 +18,8 @@ def get_bearing(pt1: GPXTrackPoint, pt2: GPXTrackPoint) -> Bearing:
     y = np.sin(d_lon) * np.cos(lat2)
     x = np.cos(lat1) * np.sin(lat2) - np.sin(lat1) * np.cos(lat2) * np.cos(d_lon)
 
-    bearing_rad = (np.arctan2(y, x) + np.pi) % np.pi
+    bearing_rad = (np.arctan2(y, x) + 2*np.pi) % (2*np.pi)
     bearing_deg = np.degrees(bearing_rad)
-    
-    return Bearing(bearing_rad, bearing_deg)
+    climb_rate = (pt2.elevation - pt1.elevation) / (pt2.time - pt1.time).total_seconds()
+
+    return Bearing(bearing_rad, bearing_deg, climb_rate)
