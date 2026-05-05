@@ -83,11 +83,11 @@ class IGCFile:
 
     def get_gps_altitude_at_time(self, time: datetime) -> int:
         target_ts = time.timestamp()
-        return round(np.interp(target_ts, self.altitude_df['ts_gps'], self.altitude_df['alt_gps']))
+        return np.interp(target_ts, self.altitude_df['ts_gps'], self.altitude_df['alt_gps'])
     
     def get_pressure_altitude_at_time(self, time: datetime) -> int:
         target_ts = time.timestamp()
-        return round(np.interp(target_ts, self.altitude_df['ts_pressure'], self.altitude_df['alt_pressure']))
+        return np.interp(target_ts, self.altitude_df['ts_pressure'], self.altitude_df['alt_pressure'])
     
     def get_altitude_at_time(self, time: datetime) -> int:
         target_ts = time.timestamp()
