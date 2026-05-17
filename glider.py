@@ -129,7 +129,7 @@ class GoProVideoMetadata:
             creation_time=datetime.fromisoformat(metadata['tags']['creation_time']),
             number_of_frames=int(metadata['nb_frames']),
             fps = fps,
-            duration_seconds=metadata['duration']
+            duration_seconds=float(metadata['duration'])
         )
 
 
@@ -150,3 +150,18 @@ class GoProGPX:
         self.track: list[GPXTrackPoint] = gpx.tracks[0].segments[0].points
         if not keep_poor_trackpoints:
             self.track = [x for x in self.track if x.position_dilution < GPX_DILUTION_THRESHOLD]
+
+class GoProVideoSequence:
+    
+    def __init__(self, path_to_videos):
+        pass
+
+class GoProFlightVideo:
+
+    def __init__(self, path_to_videos, igc_file: IGCFile):
+        self.igc_file = igc_file
+        self.videos = []
+        for path in path_to_videos:
+            metadata = GoProVideoMetadata.from_video(path)
+            gpx = GoProGPX(path)
+            self.videos.append((path, metadata, gpx))
